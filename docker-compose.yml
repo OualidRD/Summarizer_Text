@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  inference:
+    build:
+      context: .
+      dockerfile: Dockerfile.inference
+    container_name: inference
+    ports:
+      - "8000:8000" # Expose FastAPI on port 8000
+    expose:
+      - "8000"
+    networks:
+      - summarizer-network
+
+  interface:
+    build:
+      context: .
+      dockerfile: Dockerfile.interface
+    container_name: interface
+    ports:
+      - "8501:8501" # Expose Streamlit on port 8501
+    depends_on:
+      - inference
+    networks:
+      - summarizer-network
+
+networks:
+  summarizer-network:
+    driver: bridge
